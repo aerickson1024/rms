@@ -24,7 +24,15 @@ const { initializeApp } = require('firebase/app');
 const {
   getFirestore,
   collection,
-  getDocs
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+  serverTimestamp
 } = require('firebase/firestore');
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -45,20 +53,77 @@ initializeApp(firebaseConfig);
 const db = getFirestore();
 
 // collection ref
-const colectionReference = collection(db, 'characters');
+const charactersReference = collection(db, 'characters');
 
 // get collection data
-getDocs(colectionReference)
-  .then((snapshot) => {
-    let chars = [];
+// getDocs(charactersReference)
+//   .then((snapshot) => {
+//     let chars = [];
 
-    snapshot.docs.forEach((doc) => {
-      chars.push({
-        id: doc.id,
-        ...doc.data()
-      });
-    });
+//     snapshot.docs.forEach((doc) => {
+//       chars.push({
+//         id: doc.id,
+//         ...doc.data()
+//       });
+//     });
 
-    console.log(chars);
-  })
-  .catch((error) => console.error(error.message));
+//     console.log(chars);
+//   })
+//   .catch((error) => console.error(error.message));
+
+// setTimeout(() => {
+//   addDoc(charactersReference, {
+//     name: 'Tach ',
+//     level: 60,
+//     createdOn: serverTimestamp()
+//   })
+//   .then(() => {
+//     console.log('Character was added!');
+//   })
+//   .catch(error => console.error(error.message));
+// }, 5000);
+
+// setTimeout(() => {
+//   const docRef = doc(db, 'characters', 'V0V395aFYyPv7MG8UpdL');
+
+//   deleteDoc(docRef)
+//     .then(() => {
+//       console.log('Doc deleted!');
+//     })
+//     .catch(error => console.error(error.message));
+// }, 5000);
+
+// onSnapshot(charactersReference, (snapshot) => {
+//   let chars = [];
+
+//   snapshot.docs.forEach((doc) => {
+//     let character = {id: doc.id, ...doc.data()};
+//     chars.push(character);
+//   });
+
+//   console.log(chars);
+// });
+
+// const queryReference = query(charactersReference, where('level', '==', 60), orderBy('createdOn'));
+const queryReference = query(charactersReference, orderBy('createdOn'));
+
+// setTimeout(() => {
+//   const docRef = doc(db, 'characters', 'sDao9BNs0ZJuxfCta81e');
+
+//   deleteDoc(docRef)
+//     .then(() => {
+//       console.log('Doc deleted!');
+//     })
+//     .catch(error => console.error(error.message));
+// }, 5000);
+
+onSnapshot(queryReference, (snapshot) => {
+  let chars = [];
+
+  snapshot.docs.forEach((doc) => {
+    let character = {id: doc.id, ...doc.data()};
+    chars.push(character);
+  });
+
+  console.log(chars);
+});
